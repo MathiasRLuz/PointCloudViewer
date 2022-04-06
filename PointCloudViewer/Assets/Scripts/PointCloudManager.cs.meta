@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 08888770fa33d834cb6152fc3c211482
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - matVertex: {fileID: 2100000, guid: c6167fbe1e148504983b11900ef83420, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
