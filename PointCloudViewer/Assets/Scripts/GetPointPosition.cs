@@ -17,9 +17,11 @@ public class GetPointPosition : MonoBehaviour
     void Update()
     {
         _ray = camera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(_ray,out _raycastHit) && Input.GetButtonDown("Fire1"))
-        {
-            Debug.Log(_raycastHit.collider.ClosestPoint(_raycastHit.point));
-        }
+        if (Input.GetMouseButtonDown(0)) {
+            //Debug.Log("CLICOU");
+            if (Physics.Raycast(_ray, out _raycastHit)) {
+                Debug.Log(_raycastHit.collider.ClosestPoint(_raycastHit.point));
+            }
+        }        
     }
 }

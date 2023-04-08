@@ -135,9 +135,8 @@ GameObject:
   - component: {fileID: 1163593821}
   - component: {fileID: 1163593819}
   - component: {fileID: 1163593818}
-  - component: {fileID: 1163593820}
-  - component: {fileID: 1163593823}
   - component: {fileID: 1163593824}
+  - component: {fileID: 1163593825}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -161,21 +160,6 @@ Behaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1163593817}
   m_Enabled: 1
---- !u!114 &1163593820
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1163593817}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4cb50f97fb72d9b4a9d1099c4cce86f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 0
-  rotateSpeed: 0
-  pointCloudManager: {fileID: 1807174787}
 --- !u!20 &1163593821
 Camera:
   m_ObjectHideFlags: 0
@@ -226,30 +210,28 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1163593817}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 30.3, y: 0, z: -46.4}
+  m_LocalRotation: {x: 0.5821397, y: -0.042105194, z: 0.030207077, w: 0.8114358}
+  m_LocalPosition: {x: 160.10774, y: 155.20541, z: 50.640114}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &1163593823
-Rigidbody:
+--- !u!114 &1163593824
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1163593817}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 5
-  m_AngularDrag: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!114 &1163593824
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18fe2e429c7bc7342b0b3f6821d016cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  camera: {fileID: 1163593821}
+--- !u!114 &1163593825
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -258,10 +240,38 @@ MonoBehaviour:
   m_GameObject: {fileID: 1163593817}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 18fe2e429c7bc7342b0b3f6821d016cf, type: 3}
+  m_Script: {fileID: 11500000, guid: 49dfb42a60c2e5b44b3085a76469d752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 1163593821}
+  boost: 3.5
+  positionLerpTime: 0.2
+  mouseSensitivity: 60
+  mouseSensitivityCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.5
+      inSlope: 0
+      outSlope: 5
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 2.5
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  rotationLerpTime: 0.01
+  invertY: 1
 --- !u!1 &1807174786
 GameObject:
   m_ObjectHideFlags: 0
@@ -291,16 +301,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08888770fa33d834cb6152fc3c211482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dataPath: /PointCloud/test
-  FileExtension: .off
+  dataPath: /PointCloud/cachoeira2
+  FileExtension: .ply
   matVertex: {fileID: 2100000, guid: c6167fbe1e148504983b11900ef83420, type: 2}
-  loaded: 0
-  pointCloud: {fileID: 0}
   scale: 1
   invertYZ: 1
   forceReload: 1
   numPoints: 0
   numPointGroups: 0
+  firstPoints: []
+  _quadPrefab: {fileID: 0}
+  _spawnAmount: 0
+  minBounds: {x: 0, y: 0, z: 0}
+  maxBounds: {x: 0, y: 0, z: 0}
 --- !u!4 &1807174788
 Transform:
   m_ObjectHideFlags: 0
@@ -311,6 +324,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
