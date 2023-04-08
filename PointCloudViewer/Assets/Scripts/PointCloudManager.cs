@@ -3,9 +3,6 @@ using System.Collections;
 using System.IO;
 using System.Linq;
 using System;
-using UnityEngine.Pool;
-using System.Collections.Generic;
-using UnityEngine.Networking;
 
 #region Points classes
 [Serializable]
