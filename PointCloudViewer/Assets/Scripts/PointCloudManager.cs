@@ -206,7 +206,7 @@ public class PointCloudManager : MonoBehaviour {
 
             for (int i = 0; i < numPointGroups; i++) {
                 GameObject go = octreeElementsGameObjects[i];
-                MyInstantiateMesh(go, go.GetComponent<PointList>().points);
+                MyInstantiateMesh(go, go.GetComponent<PointList>());
                 progress = i * 1.0f / (numPointGroups - 1) * 1.0f;
                 if (i % 10 == 0) {
                     guiText = i.ToString() + " out of " + numPointGroups.ToString() + " PointGroups loaded";                    
@@ -216,7 +216,7 @@ public class PointCloudManager : MonoBehaviour {
             //InstantiateMesh(numPointGroups - 1, numPoints - (numPointGroups - 1) * limitPoints);
 
             //Store PointCloud        
-            //UnityEditor.PrefabUtility.SaveAsPrefabAsset(pointCloud, "Assets/Resources/PointCloudMeshes/" + filename + ".prefab");
+            //UnityEditor.PrefabUtility.SaveAsPrefabAsset(pointCloud, "Assets/Resources/PointCloudMeshes/" + filename + ".prefab");            
             OnFinishedLoading();
         }
     }
@@ -251,15 +251,19 @@ public class PointCloudManager : MonoBehaviour {
                     // Check if the point is in the right side
                     if (point.x > center.x) {
                         pointsTopFrontRight.points.Add(point);
+                        pointsTopFrontRight.indices.Add(i);
                     } else { // left
                         pointsTopFrontLeft.points.Add(point);
+                        pointsTopFrontLeft.indices.Add(i);
                     }
                 } else { // back
                     // Check if the point is in the right side
                     if (point.x > center.x) {
                         pointsTopBackRight.points.Add(point);
+                        pointsTopBackRight.indices.Add(i);
                     } else { // left
                         pointsTopBackLeft.points.Add(point);
+                        pointsTopBackLeft.indices.Add(i);
                     }
                 }
             } else { // bottom
@@ -268,39 +272,44 @@ public class PointCloudManager : MonoBehaviour {
                     // Check if the point is in the right side
                     if (point.x > center.x) {
                         pointsBottomFrontRight.points.Add(point);
+                        pointsBottomFrontRight.indices.Add(i);
                     } else { // left
                         pointsBottomFrontLeft.points.Add(point);
+                        pointsBottomFrontLeft.indices.Add(i);
                     }
                 } else { // back
                     // Check if the point is in the right side
                     if (point.x > center.x) {
                         pointsBottomBackRight.points.Add(point);
+                        pointsBottomBackRight.indices.Add(i);
                     } else { // left
                         pointsBottomBackLeft.points.Add(point);
+                        pointsBottomBackLeft.indices.Add(i);
                     }
                 }
             }
         }
 
         List<OctreeElement> octreeElements = new List<OctreeElement>();
-        octreeElements.Add(new OctreeElement(minBounds, center, pointsBottomBackLeft.points));
-        octreeElements.Add(new OctreeElement(new Vector3(minBounds.x, minBounds.y, center.z), new Vector3(center.x, center.y, maxBounds.z), pointsBottomFrontLeft.points));
-        octreeElements.Add(new OctreeElement(new Vector3(center.x, minBounds.y, minBounds.z), new Vector3(maxBounds.x, center.y, center.z), pointsBottomBackRight.points));
-        octreeElements.Add(new OctreeElement(new Vector3(center.x, minBounds.y, center.z), new Vector3(maxBounds.x, center.y, maxBounds.z), pointsBottomFrontRight.points));
-        octreeElements.Add(new OctreeElement(new Vector3(minBounds.x, center.y, minBounds.z), new Vector3(center.x, maxBounds.y, center.z), pointsTopBackLeft.points));
-        octreeElements.Add(new OctreeElement(new Vector3(minBounds.x, center.y, center.z), new Vector3(center.x, maxBounds.y, maxBounds.z), pointsTopFrontLeft.points));
-        octreeElements.Add(new OctreeElement(new Vector3(center.x, center.y, minBounds.z), new Vector3(maxBounds.x, maxBounds.y, center.z), pointsTopBackRight.points));
-        octreeElements.Add(new OctreeElement(center, maxBounds, pointsTopFrontRight.points));
+        octreeElements.Add(new OctreeElement(minBounds, center, pointsBottomBackLeft.points, pointsBottomBackLeft.indices));
+        octreeElements.Add(new OctreeElement(new Vector3(minBounds.x, minBounds.y, center.z), new Vector3(center.x, center.y, maxBounds.z), pointsBottomFrontLeft.points, pointsBottomFrontLeft.indices));
+        octreeElements.Add(new OctreeElement(new Vector3(center.x, minBounds.y, minBounds.z), new Vector3(maxBounds.x, center.y, center.z), pointsBottomBackRight.points, pointsBottomBackRight.indices));
+        octreeElements.Add(new OctreeElement(new Vector3(center.x, minBounds.y, center.z), new Vector3(maxBounds.x, center.y, maxBounds.z), pointsBottomFrontRight.points, pointsBottomFrontRight.indices));
+        octreeElements.Add(new OctreeElement(new Vector3(minBounds.x, center.y, minBounds.z), new Vector3(center.x, maxBounds.y, center.z), pointsTopBackLeft.points, pointsTopBackLeft.indices));
+        octreeElements.Add(new OctreeElement(new Vector3(minBounds.x, center.y, center.z), new Vector3(center.x, maxBounds.y, maxBounds.z), pointsTopFrontLeft.points, pointsTopFrontLeft.indices));
+        octreeElements.Add(new OctreeElement(new Vector3(center.x, center.y, minBounds.z), new Vector3(maxBounds.x, maxBounds.y, center.z), pointsTopBackRight.points, pointsTopBackRight.indices));
+        octreeElements.Add(new OctreeElement(center, maxBounds, pointsTopFrontRight.points, pointsTopFrontRight.indices));
         for (int i = 0; i < octreeElements.Count; i++) {
             OctreeElement octreeElement = octreeElements[i];
             if (octreeElement.points.Count > 0) {
                 GameObject octreeElementGO = new GameObject($"{parent.name}{i}");
                 octreeElementGO.transform.parent = parent;
                 if (octreeElement.points.Count > maxPointsInOctreeElement) {
-                    yield return CreateOctree(octreeElementGO.transform, octreeElement.points, octreeElement.minBounds, octreeElement.maxBounds);
+                    StartCoroutine(CreateOctree(octreeElementGO.transform, octreeElement.points, octreeElement.minBounds, octreeElement.maxBounds));
                 } else {
                     PointList pList = octreeElementGO.AddComponent<PointList>();
                     pList.points = octreeElement.points;
+                    pList.indices = octreeElement.indices;
                     pList.maxBounds = octreeElement.maxBounds;
                     pList.minBounds = octreeElement.minBounds;
                     octreeElementsGameObjects.Add(octreeElementGO);
@@ -314,17 +323,23 @@ public class PointCloudManager : MonoBehaviour {
         public Vector3 minBounds;
         public Vector3 maxBounds;
         public List<Vector3> points;
-        public OctreeElement(Vector3 minBounds, Vector3 maxBounds, List<Vector3> points) {
-            this.minBounds = minBounds; this.maxBounds = maxBounds; this.points = points;
+        public List<int> indices;
+        public OctreeElement(Vector3 minBounds, Vector3 maxBounds, List<Vector3> points, List<int> indices) {
+            this.minBounds = minBounds; this.maxBounds = maxBounds; this.points = points; this.indices = indices;
         }
     }
 
-    private void MyInstantiateMesh(GameObject pointGroup, List<Vector3> points) {
+    private void MyInstantiateMesh(GameObject pointGroup, PointList pointList) {
+        List<Vector3> points = pointList.points;
         pointGroup.AddComponent<MeshFilter>();
         pointGroup.AddComponent<MeshRenderer>();
         pointGroup.GetComponent<Renderer>().material = matVertex;
-        //pointGroup.GetComponent<MeshFilter>().mesh = MyCreateMesh(meshInd, nPoints, limitPoints);
+        pointGroup.GetComponent<MeshFilter>().mesh = MyCreateMesh(pointList);
         pointGroup.isStatic = true;
+        // Store Mesh
+        //UnityEditor.AssetDatabase.CreateAsset(pointGroup.GetComponent<MeshFilter>().mesh, "Assets/Resources/PointCloudMeshes/" + filename + @"/" + pointGroup.name + ".asset");
+        //UnityEditor.AssetDatabase.SaveAssets();
+        //UnityEditor.AssetDatabase.Refresh();
     }
 
     void InstantiateMesh(int meshInd, int nPoints) {
@@ -342,15 +357,16 @@ public class PointCloudManager : MonoBehaviour {
         UnityEditor.AssetDatabase.Refresh();
     }
 
-    Mesh MyCreateMesh(int id, int nPoints, int limitPoints) {
+    Mesh MyCreateMesh(PointList pointList) {
         Mesh mesh = new Mesh();
+        int nPoints = pointList.points.Count;
         Vector3[] myPoints = new Vector3[nPoints];
         int[] indices = new int[nPoints];
         Color[] myColors = new Color[nPoints];
         for (int i = 0; i < nPoints; ++i) {
-            myPoints[i] = points[id * limitPoints + i] - minBounds;
+            myPoints[i] = pointList.points[i] - minBounds;
             indices[i] = i;
-            myColors[i] = colors[id * limitPoints + i];
+            myColors[i] = colors[pointList.indices[i]];
         }
         mesh.vertices = myPoints;
         mesh.colors = myColors;
